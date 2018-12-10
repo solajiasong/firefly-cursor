@@ -207,7 +207,7 @@
             var gradient = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2);
 
             gradient.addColorStop(0, 'rgba(255,255,255,1)');
-            gradient.addColorStop(0.3, 'rgba(255,255,255,0.75)');
+            gradient.addColorStop(0.3, 'rgba(255,255,255,0.50)');
             gradient.addColorStop(0.6, 'rgba(255,255,255,0.25)');
             gradient.addColorStop(1, 'rgba(255,255,255,0)');
 
@@ -216,12 +216,11 @@
 
             console.log('generate sprite being called')
             return canvas;
-
         }
 
-        //this.particleSpriteTex = this.PARTICLE_SPRITE_TEXTURE || textureLoader.load('http://localhost:1234/textures/particle2.png');
         var canvas = generateSprite();
-        this.particleSpriteTex = new THREE.Texture(canvas);
+        this.particleSpriteTex = new THREE.CanvasTexture(canvas);
+        // this.particleSpriteTex = this.PARTICLE_SPRITE_TEXTURE || textureLoader.load('http://localhost:1234/textures/particle2.png');
         console.log(this.particleSpriteTex)
         this.particleSpriteTex.wrapS = this.particleSpriteTex.wrapT = THREE.RepeatWrapping;
 
@@ -569,7 +568,7 @@
             positionRandomness: .3,
             velocity: new THREE.Vector3(),
             velocityRandomness: .5,
-            color: 0x33ff33,
+            color: 0x0d69f2,
             colorRandomness: .2,
             turbulence: .5,
             lifetime: 5,
