@@ -180,38 +180,26 @@ THREE.GPUParticleSystem = function (options) {
 	function generateSprite(SpriteColor) {
 
 		var canvas = document.createElement('canvas');
-		canvas.width = 16;
-		canvas.height = 16;
-	
+		canvas.width = 64;
+		canvas.height = 64;
+
 		var context = canvas.getContext('2d');
 		var gradient = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2);
-	
-		if (SpriteColor == 'Yellow') {
-			gradient.addColorStop(0, 'rgba(255,252,0,1)');
-			gradient.addColorStop(0.3, 'rgba(255,252,0,0.75)');
-			gradient.addColorStop(0.6, 'rgba(255,252,0,0.05)');
-			gradient.addColorStop(1, 'rgba(255,252,0,0)');
-		} else if (SpriteColor == 'Green') {
-			gradient.addColorStop(0, 'rgba(60,240,24,1)');
-			gradient.addColorStop(0.3, 'rgba(60,240,24,0.75)');
-			gradient.addColorStop(0.6, 'rgba(60,240,24,0.05)');
-			gradient.addColorStop(1, 'rgba(60,240,24,0)');
-		} else if (SpriteColor == 'GrassGreen') {
-			gradient.addColorStop(0, 'rgba(173,223,101,1)');
-			gradient.addColorStop(0.3, 'rgba(173,223,101,0.75)');
-			gradient.addColorStop(0.6, 'rgba(173,223,101,0.05)');
-			gradient.addColorStop(1, 'rgba(173,223,101,0)');
-		}
-	
+
+		gradient.addColorStop(0, 'rgba(255,255,255,1)');
+		gradient.addColorStop(0.3, 'rgba(255,255,255,0.75)');
+		gradient.addColorStop(0.6, 'rgba(255,255,255,0.25)');
+		gradient.addColorStop(1, 'rgba(255,255,255,0)');
+
 		context.fillStyle = gradient;
 		context.fillRect(0, 0, canvas.width, canvas.height);
-	
+
 		return canvas;
-	
+
 	}
-	
+
 	//this.particleSpriteTex = this.PARTICLE_SPRITE_TEXTURE || textureLoader.load('http://localhost:1234/textures/particle2.png');
-	var canvas = generateSprite('Yellow');
+	var canvas = generateSprite();
 	this.particleSpriteTex = new THREE.Texture(canvas);
 	this.particleSpriteTex.wrapS = this.particleSpriteTex.wrapT = THREE.RepeatWrapping;
 
@@ -374,9 +362,9 @@ THREE.GPUParticleContainer = function (maxParticles, particleSystem) {
 
 		if (smoothPosition === true) {
 
-			positionStartAttribute.array[i * 3 + 0] += - (velocity.x * particleSystem.random());
-			positionStartAttribute.array[i * 3 + 1] += - (velocity.y * particleSystem.random());
-			positionStartAttribute.array[i * 3 + 2] += - (velocity.z * particleSystem.random());
+			positionStartAttribute.array[i * 3 + 0] += -(velocity.x * particleSystem.random());
+			positionStartAttribute.array[i * 3 + 1] += -(velocity.y * particleSystem.random());
+			positionStartAttribute.array[i * 3 + 2] += -(velocity.z * particleSystem.random());
 
 		}
 
@@ -388,9 +376,9 @@ THREE.GPUParticleContainer = function (maxParticles, particleSystem) {
 		var velY = velocity.y + particleSystem.random() * velocityRandomness;
 		var velZ = velocity.z + particleSystem.random() * velocityRandomness;
 
-		velX = THREE.Math.clamp((velX - (- maxVel)) / (maxVel - (- maxVel)), 0, 1);
-		velY = THREE.Math.clamp((velY - (- maxVel)) / (maxVel - (- maxVel)), 0, 1);
-		velZ = THREE.Math.clamp((velZ - (- maxVel)) / (maxVel - (- maxVel)), 0, 1);
+		velX = THREE.Math.clamp((velX - (-maxVel)) / (maxVel - (-maxVel)), 0, 1);
+		velY = THREE.Math.clamp((velY - (-maxVel)) / (maxVel - (-maxVel)), 0, 1);
+		velZ = THREE.Math.clamp((velZ - (-maxVel)) / (maxVel - (-maxVel)), 0, 1);
 
 		velocityAttribute.array[i * 3 + 0] = velX;
 		velocityAttribute.array[i * 3 + 1] = velY;
@@ -496,13 +484,13 @@ THREE.GPUParticleContainer = function (maxParticles, particleSystem) {
 				lifeTimeAttribute.updateRange.offset = 0;
 
 				// Use -1 to update the entire buffer, see #11476
-				positionStartAttribute.updateRange.count = - 1;
-				startTimeAttribute.updateRange.count = - 1;
-				velocityAttribute.updateRange.count = - 1;
-				turbulenceAttribute.updateRange.count = - 1;
-				colorAttribute.updateRange.count = - 1;
-				sizeAttribute.updateRange.count = - 1;
-				lifeTimeAttribute.updateRange.count = - 1;
+				positionStartAttribute.updateRange.count = -1;
+				startTimeAttribute.updateRange.count = -1;
+				velocityAttribute.updateRange.count = -1;
+				turbulenceAttribute.updateRange.count = -1;
+				colorAttribute.updateRange.count = -1;
+				sizeAttribute.updateRange.count = -1;
+				lifeTimeAttribute.updateRange.count = -1;
 
 			}
 
