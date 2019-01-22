@@ -17,7 +17,7 @@
 
     //create overlay and set style
     jQuery('body').prepend('<div id="particleOverlay"></div>');
-    jQuery('#particleOverlay').css('position', 'absolute').css('top', '0px').css('pointer-events', 'none');
+    jQuery('#particleOverlay').css('position', 'absolute').css('top', '0px').css('pointer-events', 'none').css('z-index', 1000);
 
     /*
      * GPU Particle System
@@ -207,14 +207,13 @@
             var gradient = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2);
 
             gradient.addColorStop(0, 'rgba(255,255,255,1)');
-            gradient.addColorStop(0.3, 'rgba(255,255,255,0.50)');
+            gradient.addColorStop(0.3, 'rgba(255,255,255,0.60)');
             gradient.addColorStop(0.6, 'rgba(255,255,255,0.25)');
             gradient.addColorStop(1, 'rgba(255,255,255,0)');
 
             context.fillStyle = gradient;
             context.fillRect(0, 0, canvas.width, canvas.height);
 
-            console.log('generate sprite being called')
             return canvas;
         }
 

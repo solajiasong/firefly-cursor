@@ -14,7 +14,6 @@
  * Shader and javascript packing code derrived from several Stack Overflow examples.
  *
  */
-
 THREE.GPUParticleSystem = function (options) {
 
 	THREE.Object3D.apply(this, arguments);
@@ -35,8 +34,9 @@ THREE.GPUParticleSystem = function (options) {
 	this.particleContainers = [];
 	this.rand = [];
 
-	// custom vertex and fragement shader
 
+
+	// custom vertex and fragement shader
 	var GPUParticleShader = {
 
 		vertexShader: [
@@ -170,14 +170,60 @@ THREE.GPUParticleSystem = function (options) {
 
 	};
 
-	var textureLoader = new THREE.TextureLoader();
+	// var textureLoader = new THREE.TextureLoader();
 	//allow cross origin loading
 	// textureLoader.crossOrigin = '';
 
-	// this.particleNoiseTex = this.PARTICLE_NOISE_TEXTURE || textureLoader.load('http://localhost:1234/textures/perlin-512.png');
-	// this.particleNoiseTex.wrapS = this.particleNoiseTex.wrapT = THREE.RepeatWrapping;
+	//Add perlin noise
+	function randomNoise(canvas, x, y, width, height, alpha) {
+		x = x || 0;
+		y = y || 0;
+		width = width || canvas.width;
+		height = height || canvas.height;
+		alpha = alpha || 255;
+		var g = canvas.getContext("2d"),
+			imageData = g.getImageData(x, y, width, height),
+			random = Math.random,
+			pixels = imageData.data,
+			n = pixels.length,
+			i = 0;
+		while (i < n) {
+			pixels[i++] = pixels[i++] = pixels[i++] = (random() * 256) | 0;
+			pixels[i++] = alpha;
+		}
+		g.putImageData(imageData, x, y);
+		return canvas;
+	}
 
-	function generateSprite(SpriteColor) {
+	function perlinNoise(canvas, noise) {
+		noise = noise || randomNoise(canvas);
+		var g = canvas.getContext("2d");
+		g.save();
+
+		/* Scale random iterations onto the canvas to generate Perlin noise. */
+		for (var size = 4; size <= noise.width; size *= 2) {
+			var x = (Math.random() * (noise.width - size)) | 0,
+				y = (Math.random() * (noise.height - size)) | 0;
+			g.globalAlpha = 4 / size;
+			g.drawImage(noise, x, y, size, size, 0, 0, canvas.width, canvas.height);
+		}
+
+		g.restore();
+
+		console.log(g);
+
+		return canvas;
+	}
+
+	function generateNoise() {
+		var canvas = document.createElement('canvas');
+		canvas.width = 512;
+		canvas.height = 512;
+
+		return perlinNoise(canvas);
+	}
+
+	function generateSprite() {
 
 		var canvas = document.createElement('canvas');
 		canvas.width = 64;
@@ -187,7 +233,7 @@ THREE.GPUParticleSystem = function (options) {
 		var gradient = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2);
 
 		gradient.addColorStop(0, 'rgba(255,255,255,1)');
-		gradient.addColorStop(0.3, 'rgba(255,255,255,0.75)');
+		gradient.addColorStop(0.3, 'rgba(255,255,255,0.60)');
 		gradient.addColorStop(0.6, 'rgba(255,255,255,0.25)');
 		gradient.addColorStop(1, 'rgba(255,255,255,0)');
 
@@ -195,12 +241,14 @@ THREE.GPUParticleSystem = function (options) {
 		context.fillRect(0, 0, canvas.width, canvas.height);
 
 		return canvas;
-
 	}
 
-	//this.particleSpriteTex = this.PARTICLE_SPRITE_TEXTURE || textureLoader.load('http://localhost:1234/textures/particle2.png');
+	var noise = generateNoise();
+	this.particleNoiseTex = new THREE.CanvasTexture(noise);
+	this.particleNoiseTex.wrapS = this.particleNoiseTex.wrapT = THREE.RepeatWrapping;
+
 	var canvas = generateSprite();
-	this.particleSpriteTex = new THREE.Texture(canvas);
+	this.particleSpriteTex = new THREE.CanvasTexture(canvas);
 	this.particleSpriteTex.wrapS = this.particleSpriteTex.wrapT = THREE.RepeatWrapping;
 
 	this.particleShaderMat = new THREE.ShaderMaterial({
@@ -212,6 +260,9 @@ THREE.GPUParticleSystem = function (options) {
 			},
 			'uScale': {
 				value: 1.0
+			},
+			'tNoise': {
+				value: this.particleNoiseTex
 			},
 			'tSprite': {
 				value: this.particleSpriteTex
@@ -518,6 +569,5 @@ THREE.GPUParticleContainer = function (maxParticles, particleSystem) {
 	this.init();
 
 };
-
 THREE.GPUParticleContainer.prototype = Object.create(THREE.Object3D.prototype);
 THREE.GPUParticleContainer.prototype.constructor = THREE.GPUParticleContainer;
